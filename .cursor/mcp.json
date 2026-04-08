@@ -1,0 +1,12 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "wsl.exe",
+            "args": [
+                "/home/dagargon89/.config/herd-lite/bin/php",
+                "/home/dagargon89/blogGPJ/blogGPJ/artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}
