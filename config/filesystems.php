@@ -17,6 +17,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Media Disk (Hub de Conocimiento)
+    |--------------------------------------------------------------------------
+    |
+    | Disk used for post media (cover images, documents, infographics). Defaults
+    | to "public" for local development. Switch to "firebase" in production once
+    | the league/flysystem-google-cloud-storage package is installed and the
+    | firebase credentials are configured.
+    |
+    */
+
+    'media' => env('MEDIA_DISK', 'public'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
     |
@@ -58,6 +72,21 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
             'report' => false,
+        ],
+
+        /*
+         * Firebase Storage vía driver Google Cloud Storage.
+         * Requiere: composer require league/flysystem-google-cloud-storage
+         */
+        'firebase' => [
+            'driver' => 'gcs',
+            'key_file_path' => env('GOOGLE_CLOUD_KEY_FILE', base_path('firebase-credentials.json')),
+            'key_file' => [],
+            'project_id' => env('GOOGLE_CLOUD_PROJECT_ID', 'tu-proyecto-id'),
+            'bucket' => env('GOOGLE_CLOUD_STORAGE_BUCKET', 'tu-proyecto-id.appspot.com'),
+            'path_prefix' => env('GOOGLE_CLOUD_STORAGE_PATH_PREFIX', ''),
+            'storage_api_uri' => env('GOOGLE_CLOUD_STORAGE_API_URI', null),
+            'visibility' => 'public',
         ],
 
     ],

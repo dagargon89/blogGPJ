@@ -1,5 +1,12 @@
-import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import {
+    BookOpen,
+    FileText,
+    FolderKanban,
+    LayoutGrid,
+    Newspaper,
+    Tags,
+} from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -13,31 +20,61 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import admin from '@/routes/admin';
+import * as blogRoutes from '@/routes/blog';
 import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
-
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
-];
-
 export function AppSidebar() {
+    const page = usePage();
+    const auth = page.props.auth as { is_admin?: boolean } | undefined;
+
+    const mainNavItems: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard(),
+            icon: LayoutGrid,
+        },
+        {
+            title: 'Blog',
+            href: blogRoutes.index(),
+            icon: BookOpen,
+        },
+    ];
+
+    const adminNavItems: NavItem[] = auth?.is_admin
+        ? [
+              {
+                  title: 'Panel admin',
+                  href: admin.dashboard(),
+                  icon: LayoutGrid,
+              },
+              {
+                  title: 'Publicaciones',
+                  href: admin.posts.index(),
+                  icon: Newspaper,
+              },
+              {
+                  title: 'Categorías',
+                  href: admin.categories.index(),
+                  icon: FolderKanban,
+              },
+              {
+                  title: 'Etiquetas',
+                  href: admin.tags.index(),
+                  icon: Tags,
+              },
+          ]
+        : [];
+
+    const footerNavItems: NavItem[] = [
+        {
+            title: 'Documentación',
+            href: 'https://laravel.com/docs/starter-kits#react',
+            icon: FileText,
+        },
+    ];
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -53,7 +90,10 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={mainNavItems} label="Plataforma" />
+                {adminNavItems.length > 0 && (
+                    <NavMain items={adminNavItems} label="Administración" />
+                )}
             </SidebarContent>
 
             <SidebarFooter>
