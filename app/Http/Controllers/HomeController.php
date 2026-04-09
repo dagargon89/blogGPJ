@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -24,7 +25,9 @@ class HomeController extends Controller
                     'slug' => $post->slug,
                     'excerpt' => $post->excerpt,
                     'content_type' => $post->content_type,
-                    'featured_image_path' => $post->featured_image_path,
+                    'featured_image_path' => $post->featured_image_path
+                        ? Storage::disk('firebase')->url($post->featured_image_path)
+                        : null,
                     'category' => ['name' => $post->category->name, 'slug' => $post->category->slug],
                     'author' => $post->author->name,
                     'published_at' => $post->published_at?->format('d M, Y'),
