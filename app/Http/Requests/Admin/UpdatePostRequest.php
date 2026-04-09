@@ -2,14 +2,35 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Http\Requests\Admin\Concerns\PostUploadValidationMessages;
+use App\Support\YoutubeVideoId;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdatePostRequest extends FormRequest
 {
+    use PostUploadValidationMessages;
+
     public function authorize(): bool
     {
         return $this->user()->hasAnyRole(['admin', 'editor']);
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if (! $this->has('youtube_video_id')) {
+            return;
+        }
+
+        if ($this->input('content_type') !== 'video') {
+            $this->merge(['youtube_video_id' => null]);
+
+            return;
+        }
+
+        $this->merge([
+            'youtube_video_id' => YoutubeVideoId::normalize($this->input('youtube_video_id')),
+        ]);
     }
 
     /** @return array<string, mixed> */
@@ -25,7 +46,7 @@ class UpdatePostRequest extends FormRequest
             'tag_ids' => ['nullable', 'array'],
             'tag_ids.*' => ['exists:tags,id'],
             'content' => ['nullable', 'string'],
-            'youtube_video_id' => ['nullable', 'string', 'max:20', 'required_if:content_type,video'],
+            'youtube_video_id' => ['nullable', 'string', 'max:11', 'regex:/^[a-zA-Z0-9_-]{11}$/', 'required_if:content_type,video'],
             'featured_image' => ['nullable', 'file', 'image', 'max:5120'],
             'remove_featured_image' => ['sometimes', 'boolean'],
             'document' => ['nullable', 'file', 'mimes:pdf,doc,docx,png,jpg,jpeg', 'max:20480'],

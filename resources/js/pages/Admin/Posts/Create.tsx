@@ -157,7 +157,7 @@ setData('slug', slugify(value));
 
                     {data.content_type === 'video' && (
                         <div>
-                            <Label htmlFor="youtube_video_id">ID del video de YouTube</Label>
+                            <Label htmlFor="youtube_video_id">ID o enlace del video de YouTube</Label>
                             <Input
                                 id="youtube_video_id"
                                 value={data.youtube_video_id}

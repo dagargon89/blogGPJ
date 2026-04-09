@@ -46,6 +46,32 @@ test('admin can create post', function () {
     $this->assertDatabaseHas('posts', ['slug' => 'mi-primer-post']);
 });
 
+test('admin can create video post con URL larga de YouTube', function () {
+    $user = User::factory()->create();
+    $user->assignRole('admin');
+    $category = Category::factory()->create();
+    $longUrl = 'https://www.youtube.com/watch?v=G9rCpwYeho0&pp=ygUNY2xhdWRlIIGNvd29yaw%3D%3D';
+
+    $this->actingAs($user)
+        ->post('/admin/posts', [
+            'title' => 'Post con video',
+            'slug' => 'post-con-video-url',
+            'excerpt' => 'Resumen del video.',
+            'content_type' => 'video',
+            'status' => 'draft',
+            'category_id' => $category->id,
+            'content' => '',
+            'youtube_video_id' => $longUrl,
+            'tag_ids' => [],
+        ])
+        ->assertRedirect('/admin/posts');
+
+    $this->assertDatabaseHas('posts', [
+        'slug' => 'post-con-video-url',
+        'youtube_video_id' => 'G9rCpwYeho0',
+    ]);
+});
+
 test('admin can delete post with soft delete', function () {
     $user = User::factory()->create();
     $user->assignRole('admin');
