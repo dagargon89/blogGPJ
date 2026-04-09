@@ -16,10 +16,13 @@ interface Post {
     created_at: string;
 }
 
+// Laravel paginator serializa en estructura plana (sin clave "meta")
 interface PaginatedPosts {
     data: Post[];
     links: { url: string | null; label: string; active: boolean }[];
-    meta: { current_page: number; last_page: number; total: number };
+    total: number;
+    current_page: number;
+    last_page: number;
 }
 
 const statusVariant: Record<string, 'default' | 'secondary' | 'outline'> = {
@@ -39,7 +42,12 @@ export default function PostsIndex({ posts }: { posts: PaginatedPosts }) {
         <AppLayout breadcrumbs={[{ title: 'Posts', href: '/admin/posts' }]}>
             <div className="p-6">
                 <div className="mb-6 flex items-center justify-between">
-                    <h1 className="text-2xl font-semibold">Posts <span className="ml-2 text-base font-normal text-muted-foreground">({posts.meta.total})</span></h1>
+                    <h1 className="text-2xl font-semibold">
+                        Posts{' '}
+                        <span className="ml-2 text-base font-normal text-muted-foreground">
+                            ({posts.total})
+                        </span>
+                    </h1>
                     <Button asChild>
                         <Link href="/admin/posts/create">
                             <Plus className="mr-1.5 h-4 w-4" /> Nuevo
@@ -96,14 +104,16 @@ export default function PostsIndex({ posts }: { posts: PaginatedPosts }) {
                             ))}
                             {posts.data.length === 0 && (
                                 <tr>
-                                    <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">No hay posts aún.</td>
+                                    <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
+                                        No hay posts aún.
+                                    </td>
                                 </tr>
                             )}
                         </tbody>
                     </table>
                 </div>
 
-                {posts.meta.last_page > 1 && (
+                {posts.last_page > 1 && (
                     <div className="mt-6 flex justify-center gap-2">
                         {posts.links.map((link, i) => (
                             <Button
