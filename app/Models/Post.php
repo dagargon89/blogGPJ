@@ -26,7 +26,7 @@ class Post extends Model
         'status',
         'featured_image_path',
         'youtube_video_id',
-        'document_path',
+        'document_url',
         'published_at',
     ];
 

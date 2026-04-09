@@ -26,7 +26,7 @@ export default function PostsCreate({ categories, tags }: Props) {
         tag_ids: number[];
         youtube_video_id: string;
         featured_image: File | null;
-        document: File | null;
+        document_url: string;
         published_at: string;
     }>({
         title: '',
@@ -39,7 +39,7 @@ export default function PostsCreate({ categories, tags }: Props) {
         tag_ids: [],
         youtube_video_id: '',
         featured_image: null,
-        document: null,
+        document_url: '',
         published_at: '',
     });
 
@@ -170,14 +170,19 @@ setData('slug', slugify(value));
 
                     {(data.content_type === 'document' || data.content_type === 'infographic') && (
                         <div>
-                            <Label htmlFor="document">Archivo (PDF, imagen...)</Label>
+                            <Label htmlFor="document_url">Enlace al archivo (Drive u otro)</Label>
+                            <p className="mb-1.5 text-xs text-muted-foreground">
+                                Pega la URL pública del PDF o imagen (p. ej. enlace de vista o compartir de Google Drive).
+                            </p>
                             <Input
-                                id="document"
-                                type="file"
-                                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                                onChange={(e) => setData('document', e.target.files?.[0] ?? null)}
+                                id="document_url"
+                                type="url"
+                                inputMode="url"
+                                value={data.document_url}
+                                onChange={(e) => setData('document_url', e.target.value)}
+                                placeholder="https://drive.google.com/file/d/…/view"
                             />
-                            <InputError message={errors.document} />
+                            <InputError message={errors.document_url} />
                         </div>
                     )}
 

@@ -18,19 +18,25 @@ class UpdatePostRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        if (! $this->has('youtube_video_id')) {
-            return;
+        if ($this->has('youtube_video_id')) {
+            if ($this->input('content_type') !== 'video') {
+                $this->merge(['youtube_video_id' => null]);
+            } else {
+                $this->merge([
+                    'youtube_video_id' => YoutubeVideoId::normalize($this->input('youtube_video_id')),
+                ]);
+            }
         }
 
-        if ($this->input('content_type') !== 'video') {
-            $this->merge(['youtube_video_id' => null]);
-
-            return;
+        if ($this->has('document_url')) {
+            if (! in_array($this->input('content_type'), ['document', 'infographic'], true)) {
+                $this->merge(['document_url' => null]);
+            } else {
+                $raw = $this->input('document_url');
+                $url = is_string($raw) ? trim($raw) : '';
+                $this->merge(['document_url' => $url === '' ? null : $url]);
+            }
         }
-
-        $this->merge([
-            'youtube_video_id' => YoutubeVideoId::normalize($this->input('youtube_video_id')),
-        ]);
     }
 
     /** @return array<string, mixed> */
@@ -49,7 +55,13 @@ class UpdatePostRequest extends FormRequest
             'youtube_video_id' => ['nullable', 'string', 'max:11', 'regex:/^[a-zA-Z0-9_-]{11}$/', 'required_if:content_type,video'],
             'featured_image' => ['nullable', 'file', 'image', 'max:5120'],
             'remove_featured_image' => ['sometimes', 'boolean'],
-            'document' => ['nullable', 'file', 'mimes:pdf,doc,docx,png,jpg,jpeg', 'max:20480'],
+            'document_url' => [
+                'nullable',
+                'string',
+                'max:2048',
+                Rule::requiredIf(fn () => in_array($this->input('content_type'), ['document', 'infographic'], true)),
+                'url:http,https',
+            ],
             'published_at' => ['nullable', 'date'],
         ];
     }

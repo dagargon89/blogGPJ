@@ -10,8 +10,7 @@ trait PostUploadValidationMessages
     public function messages(): array
     {
         return [
-            'document.uploaded' => 'El servidor no recibió el archivo. Suele deberse a que supera el límite de subida de PHP (upload_max_filesize / post_max_size). En local, usa el script composer run dev del proyecto; en producción, sube esos límites en php.ini o en la configuración del servidor web.',
-            'featured_image.uploaded' => 'El servidor no recibió la imagen de portada. Revisa los límites upload_max_filesize y post_max_size de PHP.',
+            'featured_image.uploaded' => 'El servidor no recibió la imagen de portada (máx. 5 MB en la app). Revisa upload_max_filesize y post_max_size en PHP.',
         ];
     }
 }

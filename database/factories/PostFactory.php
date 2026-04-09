@@ -30,7 +30,9 @@ class PostFactory extends Factory
             'status' => $status,
             'featured_image_path' => null,
             'youtube_video_id' => $contentType === 'video' ? fake()->regexify('[A-Za-z0-9_-]{11}') : null,
-            'document_path' => in_array($contentType, ['document', 'infographic']) ? 'documents/sample.pdf' : null,
+            'document_url' => in_array($contentType, ['document', 'infographic'], true)
+                ? 'https://drive.google.com/file/d/'.fake()->regexify('[a-zA-Z0-9_-]{20}').'/view?usp=sharing'
+                : null,
             'published_at' => $status === 'published' ? now()->subDays(fake()->numberBetween(1, 60)) : null,
         ];
     }
@@ -57,7 +59,7 @@ class PostFactory extends Factory
             'content_type' => 'article',
             'content' => '<p>'.implode('</p><p>', fake()->paragraphs(4)).'</p>',
             'youtube_video_id' => null,
-            'document_path' => null,
+            'document_url' => null,
         ]);
     }
 }

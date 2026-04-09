@@ -22,7 +22,7 @@ interface Post {
     youtube_video_id: string | null;
     featured_image_path: string | null;
     featured_image_url: string | null;
-    document_path: string | null;
+    document_url: string | null;
     published_at: string | null;
 }
 
@@ -45,7 +45,7 @@ export default function PostsEdit({ post, categories, tags }: Props) {
         youtube_video_id: string;
         featured_image: File | null;
         remove_featured_image: boolean;
-        document: File | null;
+        document_url: string;
         published_at: string;
         _method: string;
     }>({
@@ -60,7 +60,7 @@ export default function PostsEdit({ post, categories, tags }: Props) {
         youtube_video_id: post.youtube_video_id ?? '',
         featured_image: null,
         remove_featured_image: false,
-        document: null,
+        document_url: post.document_url ?? '',
         published_at: post.published_at ? post.published_at.substring(0, 16) : '',
         _method: 'PUT',
     });
@@ -174,17 +174,19 @@ export default function PostsEdit({ post, categories, tags }: Props) {
 
                     {(data.content_type === 'document' || data.content_type === 'infographic') && (
                         <div>
-                            <Label htmlFor="document">Archivo</Label>
-                            {post.document_path && (
-                                <p className="mb-1 text-xs text-muted-foreground">Actual: {post.document_path}</p>
-                            )}
+                            <Label htmlFor="document_url">Enlace al archivo (Drive u otro)</Label>
+                            <p className="mb-1.5 text-xs text-muted-foreground">
+                                URL pública del PDF o imagen alojada fuera del sitio.
+                            </p>
                             <Input
-                                id="document"
-                                type="file"
-                                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                                onChange={(e) => setData('document', e.target.files?.[0] ?? null)}
+                                id="document_url"
+                                type="url"
+                                inputMode="url"
+                                value={data.document_url}
+                                onChange={(e) => setData('document_url', e.target.value)}
+                                placeholder="https://…"
                             />
-                            <InputError message={errors.document} />
+                            <InputError message={errors.document_url} />
                         </div>
                     )}
 

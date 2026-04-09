@@ -47,14 +47,10 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request): RedirectResponse
     {
-        $data = $request->safe()->except(['featured_image', 'document', 'tag_ids']);
+        $data = $request->safe()->except(['featured_image', 'tag_ids']);
 
         if ($request->hasFile('featured_image')) {
             $data['featured_image_path'] = Storage::disk('firebase')->put('posts/covers', $request->file('featured_image'));
-        }
-
-        if ($request->hasFile('document')) {
-            $data['document_path'] = Storage::disk('firebase')->put('posts/documents', $request->file('document'));
         }
 
         if ($data['status'] === 'published' && empty($data['published_at'])) {
@@ -86,7 +82,7 @@ class PostController extends Controller
 
     public function update(UpdatePostRequest $request, Post $post): RedirectResponse
     {
-        $data = $request->safe()->except(['featured_image', 'document', 'tag_ids', 'remove_featured_image']);
+        $data = $request->safe()->except(['featured_image', 'tag_ids', 'remove_featured_image']);
 
         if ($request->hasFile('featured_image')) {
             if ($post->featured_image_path) {
@@ -98,13 +94,6 @@ class PostController extends Controller
                 Storage::disk('firebase')->delete($post->featured_image_path);
             }
             $data['featured_image_path'] = null;
-        }
-
-        if ($request->hasFile('document')) {
-            if ($post->document_path) {
-                Storage::disk('firebase')->delete($post->document_path);
-            }
-            $data['document_path'] = Storage::disk('firebase')->put('posts/documents', $request->file('document'));
         }
 
         if ($data['status'] === 'published' && ! $post->published_at) {

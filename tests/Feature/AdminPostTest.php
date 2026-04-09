@@ -46,6 +46,52 @@ test('admin can create post', function () {
     $this->assertDatabaseHas('posts', ['slug' => 'mi-primer-post']);
 });
 
+test('admin can create document post con enlace externo', function () {
+    $user = User::factory()->create();
+    $user->assignRole('admin');
+    $category = Category::factory()->create();
+    $driveUrl = 'https://drive.google.com/file/d/1AbCdEfGhIjKlMnOpQrStUvWxYz/view?usp=sharing';
+
+    $this->actingAs($user)
+        ->post('/admin/posts', [
+            'title' => 'Guía PDF',
+            'slug' => 'guia-pdf-enlace',
+            'excerpt' => 'Documento en Drive.',
+            'content_type' => 'document',
+            'status' => 'draft',
+            'category_id' => $category->id,
+            'content' => '',
+            'document_url' => $driveUrl,
+            'tag_ids' => [],
+        ])
+        ->assertRedirect('/admin/posts');
+
+    $this->assertDatabaseHas('posts', [
+        'slug' => 'guia-pdf-enlace',
+        'document_url' => $driveUrl,
+    ]);
+});
+
+test('admin cannot create document post sin enlace', function () {
+    $user = User::factory()->create();
+    $user->assignRole('admin');
+    $category = Category::factory()->create();
+
+    $this->actingAs($user)
+        ->post('/admin/posts', [
+            'title' => 'Sin enlace',
+            'slug' => 'sin-enlace-doc',
+            'excerpt' => 'Falta URL.',
+            'content_type' => 'document',
+            'status' => 'draft',
+            'category_id' => $category->id,
+            'content' => '',
+            'document_url' => '',
+            'tag_ids' => [],
+        ])
+        ->assertSessionHasErrors('document_url');
+});
+
 test('admin can create video post con URL larga de YouTube', function () {
     $user = User::factory()->create();
     $user->assignRole('admin');

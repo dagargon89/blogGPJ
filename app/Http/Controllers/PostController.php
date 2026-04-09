@@ -70,9 +70,7 @@ class PostController extends Controller
                         ? Storage::disk('firebase')->url($post->featured_image_path)
                         : null,
                     'youtube_id' => $post->youtube_video_id,
-                    'document' => $post->document_path
-                        ? Storage::disk('firebase')->url($post->document_path)
-                        : null,
+                    'document' => $post->document_url,
                 ],
                 'category' => ['name' => $post->category->name, 'slug' => $post->category->slug],
                 'tags' => $post->tags->map(fn ($t) => ['name' => $t->name, 'slug' => $t->slug]),
