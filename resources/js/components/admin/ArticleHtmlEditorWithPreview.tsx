@@ -130,35 +130,40 @@ export function ArticleHtmlEditorWithPreview({
         <div className="space-y-2">
             <Label htmlFor={id}>{label}</Label>
 
-            <div className="flex gap-2 lg:hidden">
-                <Button
-                    type="button"
-                    size="sm"
-                    variant={mobilePanel === 'edit' ? 'default' : 'outline'}
-                    onClick={() => setMobilePanel('edit')}
-                >
-                    Editor
-                </Button>
-                <Button
-                    type="button"
-                    size="sm"
-                    variant={mobilePanel === 'preview' ? 'default' : 'outline'}
-                    onClick={() => setMobilePanel('preview')}
-                >
-                    Vista previa
-                </Button>
-            </div>
+            {/* Sale del max-w-3xl del formulario: ancho = 75vw respecto al viewport */}
+            <div className="relative ml-[calc(50%-50vw)] w-screen max-w-[100vw] overflow-x-clip px-3 sm:px-6">
+                <div className="mx-auto w-full min-w-0 space-y-2 lg:w-[75vw]">
+                    <div className="flex gap-2 lg:hidden">
+                        <Button
+                            type="button"
+                            size="sm"
+                            variant={mobilePanel === 'edit' ? 'default' : 'outline'}
+                            onClick={() => setMobilePanel('edit')}
+                        >
+                            Editor
+                        </Button>
+                        <Button
+                            type="button"
+                            size="sm"
+                            variant={mobilePanel === 'preview' ? 'default' : 'outline'}
+                            onClick={() => setMobilePanel('preview')}
+                        >
+                            Vista previa
+                        </Button>
+                    </div>
 
-            <div className="hidden gap-4 lg:grid lg:grid-cols-2">
-                {editor}
-                <div className="flex min-h-0 flex-col">
-                    <p className="mb-2 text-xs font-medium text-muted-foreground">Vista previa</p>
-                    {preview}
+                    <div className="hidden gap-4 lg:grid lg:grid-cols-2">
+                        {editor}
+                        <div className="flex min-h-0 flex-col">
+                            <p className="mb-2 text-xs font-medium text-muted-foreground">Vista previa</p>
+                            {preview}
+                        </div>
+                    </div>
+
+                    <div className="lg:hidden">
+                        {mobilePanel === 'edit' ? editor : preview}
+                    </div>
                 </div>
-            </div>
-
-            <div className="lg:hidden">
-                {mobilePanel === 'edit' ? editor : preview}
             </div>
 
             <InputError message={error} />
