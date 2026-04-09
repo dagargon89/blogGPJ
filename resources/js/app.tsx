@@ -12,14 +12,15 @@ createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     layout: (name) => {
         switch (true) {
-            case name === 'welcome':
-                return null;
+            // Auth pages → AuthLayout
             case name.startsWith('auth/'):
                 return AuthLayout;
+            // Settings pages → AppLayout + SettingsLayout
             case name.startsWith('settings/'):
                 return [AppLayout, SettingsLayout];
+            // All other pages manage their own layout internally
             default:
-                return AppLayout;
+                return null;
         }
     },
     strictMode: true,
