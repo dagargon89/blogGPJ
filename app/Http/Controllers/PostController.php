@@ -64,10 +64,19 @@ class PostController extends Controller
 
         $post->load(['category', 'tags', 'author']);
 
-        $relatedPosts = Post::published()
-            ->where('category_id', $post->category_id)
+        $tagIds = $post->tags->pluck('id');
+
+        $relatedQuery = Post::published()
             ->where('id', '!=', $post->id)
-            ->with(['category', 'author'])
+            ->with(['category', 'author']);
+
+        if ($tagIds->isNotEmpty()) {
+            $relatedQuery->whereHas('tags', fn ($q) => $q->whereIn('tags.id', $tagIds));
+        } else {
+            $relatedQuery->where('category_id', $post->category_id);
+        }
+
+        $relatedPosts = $relatedQuery
             ->latest('published_at')
             ->take(3)
             ->get()
@@ -91,7 +100,7 @@ class PostController extends Controller
             'post' => [
                 'id' => $post->id,
                 'title' => $post->title,
-                'excerpt' => $post->excerpt,
+                'excerpt' => preg_replace('/(\*{1,2}|_{1,2})(.*?)\1/', '$2', $post->excerpt ?? ''),
                 'content' => $post->content,
                 'content_type' => $post->content_type,
                 'media' => [
