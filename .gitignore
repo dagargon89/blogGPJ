@@ -14,6 +14,10 @@
 .env
 .env.backup
 .env.production
+.env.*.example
+/database/*.sqlite
+/database/*.sqlite-shm
+/database/*.sqlite-wal
 .phpactor.json
 .phpunit.result.cache
 Homestead.json
