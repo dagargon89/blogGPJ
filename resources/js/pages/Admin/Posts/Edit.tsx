@@ -1,5 +1,6 @@
 import { useForm, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
+import { FeaturedImageField } from '@/components/admin/FeaturedImageField';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,6 +20,7 @@ interface Post {
     tag_ids: number[];
     youtube_video_id: string | null;
     featured_image_path: string | null;
+    featured_image_url: string | null;
     document_path: string | null;
     published_at: string | null;
 }
@@ -41,6 +43,7 @@ export default function PostsEdit({ post, categories, tags }: Props) {
         tag_ids: number[];
         youtube_video_id: string;
         featured_image: File | null;
+        remove_featured_image: boolean;
         document: File | null;
         published_at: string;
         _method: string;
@@ -55,6 +58,7 @@ export default function PostsEdit({ post, categories, tags }: Props) {
         tag_ids: post.tag_ids,
         youtube_video_id: post.youtube_video_id ?? '',
         featured_image: null,
+        remove_featured_image: false,
         document: null,
         published_at: post.published_at ? post.published_at.substring(0, 16) : '',
         _method: 'PUT',
@@ -187,19 +191,21 @@ export default function PostsEdit({ post, categories, tags }: Props) {
                         </div>
                     )}
 
-                    <div>
-                        <Label htmlFor="featured_image">Imagen de portada</Label>
-                        {post.featured_image_path && (
-                            <p className="mb-1 text-xs text-muted-foreground">Actual: {post.featured_image_path}</p>
-                        )}
-                        <Input
-                            id="featured_image"
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => setData('featured_image', e.target.files?.[0] ?? null)}
-                        />
-                        <InputError message={errors.featured_image} />
-                    </div>
+                    <FeaturedImageField
+                        mode="edit"
+                        file={data.featured_image}
+                        onFileChange={(f) => {
+                            setData('featured_image', f);
+                            if (f) {
+                                setData('remove_featured_image', false);
+                            }
+                        }}
+                        removeFeaturedImage={data.remove_featured_image}
+                        onRemoveFeaturedImageChange={(v) => setData('remove_featured_image', v)}
+                        serverImageUrl={post.featured_image_url}
+                        serverImagePath={post.featured_image_path}
+                        error={errors.featured_image}
+                    />
 
                     {tags.length > 0 && (
                         <div>

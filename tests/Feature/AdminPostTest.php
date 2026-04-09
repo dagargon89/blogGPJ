@@ -4,6 +4,7 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 
 uses(RefreshDatabase::class);
@@ -62,4 +63,43 @@ test('editor can access admin posts list', function () {
     $user->assignRole('editor');
 
     $this->actingAs($user)->get('/admin/posts')->assertStatus(200);
+});
+
+test('admin can remove featured image from post', function () {
+    Storage::fake('firebase');
+
+    $user = User::factory()->create();
+    $user->assignRole('admin');
+    $category = Category::factory()->create();
+    $post = Post::factory()->article()->create([
+        'user_id' => $user->id,
+        'category_id' => $category->id,
+        'featured_image_path' => 'posts/covers/remove-me.jpg',
+    ]);
+    Storage::disk('firebase')->put('posts/covers/remove-me.jpg', 'fake-image');
+
+    $payload = [
+        'title' => $post->title,
+        'slug' => $post->slug,
+        'excerpt' => $post->excerpt,
+        'content_type' => $post->content_type,
+        'status' => $post->status,
+        'category_id' => $post->category_id,
+        'tag_ids' => [],
+        'content' => $post->content ?? '',
+        'remove_featured_image' => true,
+    ];
+
+    if ($post->published_at) {
+        $payload['published_at'] = $post->published_at->format('Y-m-d\TH:i');
+    }
+
+    $this->actingAs($user)
+        ->put("/admin/posts/{$post->id}", $payload)
+        ->assertRedirect('/admin/posts');
+
+    $post->refresh();
+
+    expect($post->featured_image_path)->toBeNull();
+    Storage::disk('firebase')->assertMissing('posts/covers/remove-me.jpg');
 });

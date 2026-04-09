@@ -27,6 +27,7 @@ class UpdatePostRequest extends FormRequest
             'content' => ['nullable', 'string'],
             'youtube_video_id' => ['nullable', 'string', 'max:20', 'required_if:content_type,video'],
             'featured_image' => ['nullable', 'file', 'image', 'max:5120'],
+            'remove_featured_image' => ['sometimes', 'boolean'],
             'document' => ['nullable', 'file', 'mimes:pdf,doc,docx,png,jpg,jpeg', 'max:20480'],
             'published_at' => ['nullable', 'date'],
         ];

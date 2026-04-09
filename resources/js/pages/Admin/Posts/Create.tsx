@@ -1,6 +1,6 @@
 import { useForm, Link } from '@inertiajs/react';
-import { useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
+import { FeaturedImageField } from '@/components/admin/FeaturedImageField';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -181,17 +181,11 @@ export default function PostsCreate({ categories, tags }: Props) {
                         </div>
                     )}
 
-                    {/* Featured image */}
-                    <div>
-                        <Label htmlFor="featured_image">Imagen de portada</Label>
-                        <Input
-                            id="featured_image"
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => setData('featured_image', e.target.files?.[0] ?? null)}
-                        />
-                        <InputError message={errors.featured_image} />
-                    </div>
+                    <FeaturedImageField
+                        file={data.featured_image}
+                        onFileChange={(f) => setData('featured_image', f)}
+                        error={errors.featured_image}
+                    />
 
                     {/* Tags */}
                     {tags.length > 0 && (

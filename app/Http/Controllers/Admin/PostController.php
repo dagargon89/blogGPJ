@@ -75,6 +75,9 @@ class PostController extends Controller
         return Inertia::render('Admin/Posts/Edit', [
             'post' => array_merge($post->toArray(), [
                 'tag_ids' => $post->tags()->pluck('tags.id'),
+                'featured_image_url' => $post->featured_image_path
+                    ? Storage::disk('firebase')->url($post->featured_image_path)
+                    : null,
             ]),
             'categories' => Category::orderBy('name')->get(['id', 'name']),
             'tags' => Tag::orderBy('name')->get(['id', 'name']),
@@ -83,13 +86,18 @@ class PostController extends Controller
 
     public function update(UpdatePostRequest $request, Post $post): RedirectResponse
     {
-        $data = $request->safe()->except(['featured_image', 'document', 'tag_ids']);
+        $data = $request->safe()->except(['featured_image', 'document', 'tag_ids', 'remove_featured_image']);
 
         if ($request->hasFile('featured_image')) {
             if ($post->featured_image_path) {
                 Storage::disk('firebase')->delete($post->featured_image_path);
             }
             $data['featured_image_path'] = Storage::disk('firebase')->put('posts/covers', $request->file('featured_image'));
+        } elseif ($request->boolean('remove_featured_image')) {
+            if ($post->featured_image_path) {
+                Storage::disk('firebase')->delete($post->featured_image_path);
+            }
+            $data['featured_image_path'] = null;
         }
 
         if ($request->hasFile('document')) {

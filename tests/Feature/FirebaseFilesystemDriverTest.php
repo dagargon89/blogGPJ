@@ -29,4 +29,8 @@ test('firebase disk resolves the custom gcs driver without InvalidArgumentExcept
     $disk = Storage::disk('firebase');
 
     expect($disk)->toBeInstanceOf(FilesystemAdapter::class);
+
+    expect($disk->url('posts/covers/example.png'))
+        ->toContain('storage.googleapis.com')
+        ->toContain('test-bucket-fixture');
 });

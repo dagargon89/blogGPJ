@@ -2,13 +2,13 @@
 
 namespace App\Providers;
 
+use App\Filesystem\GoogleCloudFilesystemAdapter;
 use App\Models\Category;
 use App\Models\Post;
 use App\Policies\CategoryPolicy;
 use App\Policies\PostPolicy;
 use Carbon\CarbonImmutable;
 use Google\Cloud\Storage\StorageClient;
-use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -83,7 +83,7 @@ class AppServiceProvider extends ServiceProvider
                 'visibility',
             ]));
 
-            return new FilesystemAdapter($flysystem, $adapter, $config);
+            return new GoogleCloudFilesystemAdapter($flysystem, $adapter, $config);
         });
     }
 
