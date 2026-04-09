@@ -1,10 +1,11 @@
 import { useForm, Link } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
+import { ArticleHtmlEditorWithPreview } from '@/components/admin/ArticleHtmlEditorWithPreview';
 import { FeaturedImageField } from '@/components/admin/FeaturedImageField';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import InputError from '@/components/input-error';
+import AppLayout from '@/layouts/app-layout';
 
 interface Option { id: number; name: string }
 
@@ -150,17 +151,13 @@ export default function PostsEdit({ post, categories, tags }: Props) {
                     </div>
 
                     {data.content_type === 'article' && (
-                        <div>
-                            <Label htmlFor="content">Contenido (HTML)</Label>
-                            <textarea
-                                id="content"
-                                value={data.content}
-                                onChange={(e) => setData('content', e.target.value)}
-                                rows={12}
-                                className="w-full rounded-md border border-input bg-background px-3 py-2 font-mono text-sm text-foreground ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring"
-                            />
-                            <InputError message={errors.content} />
-                        </div>
+                        <ArticleHtmlEditorWithPreview
+                            id="content"
+                            value={data.content}
+                            onChange={(v) => setData('content', v)}
+                            error={errors.content}
+                            rows={12}
+                        />
                     )}
 
                     {data.content_type === 'video' && (
@@ -196,6 +193,7 @@ export default function PostsEdit({ post, categories, tags }: Props) {
                         file={data.featured_image}
                         onFileChange={(f) => {
                             setData('featured_image', f);
+
                             if (f) {
                                 setData('remove_featured_image', false);
                             }
