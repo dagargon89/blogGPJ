@@ -1,8 +1,9 @@
 import { useForm, Link } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
+import { AdminFormCard } from '@/components/admin/AdminFormCard';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import InputError from '@/components/input-error';
+import AppLayout from '@/layouts/app-layout';
 
 interface User {
     id: number;
@@ -17,7 +18,9 @@ interface Props {
 }
 
 export default function UsersEdit({ user, roles }: Props) {
-    const { data, setData, put, processing, errors } = useForm({ role: user.role });
+    const { data, setData, put, processing, errors } = useForm({
+        role: user.role,
+    });
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -25,11 +28,17 @@ export default function UsersEdit({ user, roles }: Props) {
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Usuarios', href: '/admin/users' }, { title: 'Editar rol', href: '#' }]}>
-            <div className="mx-auto max-w-sm p-6">
-                <h1 className="mb-1 text-2xl font-semibold">Editar rol</h1>
-                <p className="mb-6 text-muted-foreground">{user.name} — {user.email}</p>
-
+        <AppLayout
+            breadcrumbs={[
+                { title: 'Usuarios', href: '/admin/users' },
+                { title: 'Editar rol', href: '#' },
+            ]}
+        >
+            <AdminFormCard
+                title="Editar rol"
+                description={`${user.name} — ${user.email}`}
+                className="max-w-sm"
+            >
                 <form onSubmit={submit} className="space-y-5">
                     <div>
                         <Label htmlFor="role">Rol</Label>
@@ -37,19 +46,27 @@ export default function UsersEdit({ user, roles }: Props) {
                             id="role"
                             value={data.role}
                             onChange={(e) => setData('role', e.target.value)}
-                            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
                         >
-                            {roles.map((r) => <option key={r} value={r}>{r}</option>)}
+                            {roles.map((r) => (
+                                <option key={r} value={r}>
+                                    {r}
+                                </option>
+                            ))}
                         </select>
                         <InputError message={errors.role} />
                     </div>
 
                     <div className="flex gap-3 pt-2">
-                        <Button type="submit" disabled={processing}>Guardar</Button>
-                        <Button asChild variant="outline"><Link href="/admin/users">Cancelar</Link></Button>
+                        <Button type="submit" disabled={processing}>
+                            Guardar
+                        </Button>
+                        <Button asChild variant="outline">
+                            <Link href="/admin/users">Cancelar</Link>
+                        </Button>
                     </div>
                 </form>
-            </div>
+            </AdminFormCard>
         </AppLayout>
     );
 }

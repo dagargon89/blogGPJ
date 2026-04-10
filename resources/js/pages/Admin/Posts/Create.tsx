@@ -1,4 +1,5 @@
 import { useForm, Link } from '@inertiajs/react';
+import { AdminFormCard } from '@/components/admin/AdminFormCard';
 import { ArticleHtmlEditorWithPreview } from '@/components/admin/ArticleHtmlEditorWithPreview';
 import { FeaturedImageField } from '@/components/admin/FeaturedImageField';
 import InputError from '@/components/input-error';
@@ -7,7 +8,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 
-interface Option { id: number; name: string }
+interface Option {
+    id: number;
+    name: string;
+}
 
 interface Props {
     categories: Option[];
@@ -43,18 +47,28 @@ export default function PostsCreate({ categories, tags }: Props) {
         published_at: '',
     });
 
-    const slugify = (v: string) => v.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+    const slugify = (v: string) =>
+        v
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-');
 
     const handleTitle = (value: string) => {
         setData('title', value);
 
         if (!data.slug || data.slug === slugify(data.title)) {
-setData('slug', slugify(value));
-}
+            setData('slug', slugify(value));
+        }
     };
 
     const toggleTag = (id: number) => {
-        setData('tag_ids', data.tag_ids.includes(id) ? data.tag_ids.filter((t) => t !== id) : [...data.tag_ids, id]);
+        setData(
+            'tag_ids',
+            data.tag_ids.includes(id)
+                ? data.tag_ids.filter((t) => t !== id)
+                : [...data.tag_ids, id],
+        );
     };
 
     const submit = (e: React.FormEvent) => {
@@ -63,21 +77,39 @@ setData('slug', slugify(value));
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Posts', href: '/admin/posts' }, { title: 'Nuevo', href: '#' }]}>
-            <div className="mx-auto max-w-3xl p-6">
-                <h1 className="mb-6 text-2xl font-semibold">Nuevo post</h1>
-
-                <form onSubmit={submit} className="space-y-6" encType="multipart/form-data">
+        <AppLayout
+            breadcrumbs={[
+                { title: 'Posts', href: '/admin/posts' },
+                { title: 'Nuevo', href: '#' },
+            ]}
+        >
+            <AdminFormCard title="Nuevo post" className="max-w-3xl">
+                <form
+                    onSubmit={submit}
+                    className="space-y-6"
+                    encType="multipart/form-data"
+                >
                     {/* Title & slug */}
                     <div className="grid gap-5 sm:grid-cols-2">
                         <div>
                             <Label htmlFor="title">Título</Label>
-                            <Input id="title" value={data.title} onChange={(e) => handleTitle(e.target.value)} autoFocus />
+                            <Input
+                                id="title"
+                                value={data.title}
+                                onChange={(e) => handleTitle(e.target.value)}
+                                autoFocus
+                            />
                             <InputError message={errors.title} />
                         </div>
                         <div>
                             <Label htmlFor="slug">Slug</Label>
-                            <Input id="slug" value={data.slug} onChange={(e) => setData('slug', e.target.value)} />
+                            <Input
+                                id="slug"
+                                value={data.slug}
+                                onChange={(e) =>
+                                    setData('slug', e.target.value)
+                                }
+                            />
                             <InputError message={errors.slug} />
                         </div>
                     </div>
@@ -90,7 +122,7 @@ setData('slug', slugify(value));
                             value={data.excerpt}
                             onChange={(e) => setData('excerpt', e.target.value)}
                             rows={2}
-                            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:outline-none"
                         />
                         <InputError message={errors.excerpt} />
                     </div>
@@ -98,12 +130,16 @@ setData('slug', slugify(value));
                     {/* Type & Status & Category */}
                     <div className="grid gap-5 sm:grid-cols-3">
                         <div>
-                            <Label htmlFor="content_type">Tipo de contenido</Label>
+                            <Label htmlFor="content_type">
+                                Tipo de contenido
+                            </Label>
                             <select
                                 id="content_type"
                                 value={data.content_type}
-                                onChange={(e) => setData('content_type', e.target.value)}
-                                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                                onChange={(e) =>
+                                    setData('content_type', e.target.value)
+                                }
+                                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
                             >
                                 <option value="article">Artículo</option>
                                 <option value="video">Video</option>
@@ -118,8 +154,10 @@ setData('slug', slugify(value));
                             <select
                                 id="status"
                                 value={data.status}
-                                onChange={(e) => setData('status', e.target.value)}
-                                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                                onChange={(e) =>
+                                    setData('status', e.target.value)
+                                }
+                                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
                             >
                                 <option value="draft">Borrador</option>
                                 <option value="published">Publicado</option>
@@ -133,11 +171,17 @@ setData('slug', slugify(value));
                             <select
                                 id="category_id"
                                 value={data.category_id}
-                                onChange={(e) => setData('category_id', e.target.value)}
-                                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                                onChange={(e) =>
+                                    setData('category_id', e.target.value)
+                                }
+                                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
                             >
                                 <option value="">Seleccionar...</option>
-                                {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                {categories.map((c) => (
+                                    <option key={c.id} value={c.id}>
+                                        {c.name}
+                                    </option>
+                                ))}
                             </select>
                             <InputError message={errors.category_id} />
                         </div>
@@ -157,29 +201,39 @@ setData('slug', slugify(value));
 
                     {data.content_type === 'video' && (
                         <div>
-                            <Label htmlFor="youtube_video_id">ID o enlace del video de YouTube</Label>
+                            <Label htmlFor="youtube_video_id">
+                                ID o enlace del video de YouTube
+                            </Label>
                             <Input
                                 id="youtube_video_id"
                                 value={data.youtube_video_id}
-                                onChange={(e) => setData('youtube_video_id', e.target.value)}
+                                onChange={(e) =>
+                                    setData('youtube_video_id', e.target.value)
+                                }
                                 placeholder="dQw4w9WgXcQ"
                             />
                             <InputError message={errors.youtube_video_id} />
                         </div>
                     )}
 
-                    {(data.content_type === 'document' || data.content_type === 'infographic') && (
+                    {(data.content_type === 'document' ||
+                        data.content_type === 'infographic') && (
                         <div>
-                            <Label htmlFor="document_url">Enlace al archivo (Drive u otro)</Label>
+                            <Label htmlFor="document_url">
+                                Enlace al archivo (Drive u otro)
+                            </Label>
                             <p className="mb-1.5 text-xs text-muted-foreground">
-                                Pega la URL pública del PDF o imagen (p. ej. enlace de vista o compartir de Google Drive).
+                                Pega la URL pública del PDF o imagen (p. ej.
+                                enlace de vista o compartir de Google Drive).
                             </p>
                             <Input
                                 id="document_url"
                                 type="url"
                                 inputMode="url"
                                 value={data.document_url}
-                                onChange={(e) => setData('document_url', e.target.value)}
+                                onChange={(e) =>
+                                    setData('document_url', e.target.value)
+                                }
                                 placeholder="https://drive.google.com/file/d/…/view"
                             />
                             <InputError message={errors.document_url} />
@@ -198,14 +252,21 @@ setData('slug', slugify(value));
                             <Label>Etiquetas</Label>
                             <div className="mt-2 flex flex-wrap gap-2">
                                 {tags.map((tag) => (
-                                    <label key={tag.id} className="flex cursor-pointer items-center gap-1.5">
+                                    <label
+                                        key={tag.id}
+                                        className="flex cursor-pointer items-center gap-1.5"
+                                    >
                                         <input
                                             type="checkbox"
-                                            checked={data.tag_ids.includes(tag.id)}
+                                            checked={data.tag_ids.includes(
+                                                tag.id,
+                                            )}
                                             onChange={() => toggleTag(tag.id)}
                                             className="rounded border-input"
                                         />
-                                        <span className="text-sm">{tag.name}</span>
+                                        <span className="text-sm">
+                                            {tag.name}
+                                        </span>
                                     </label>
                                 ))}
                             </div>
@@ -215,22 +276,30 @@ setData('slug', slugify(value));
 
                     {/* Published at */}
                     <div>
-                        <Label htmlFor="published_at">Fecha de publicación</Label>
+                        <Label htmlFor="published_at">
+                            Fecha de publicación
+                        </Label>
                         <Input
                             id="published_at"
                             type="datetime-local"
                             value={data.published_at}
-                            onChange={(e) => setData('published_at', e.target.value)}
+                            onChange={(e) =>
+                                setData('published_at', e.target.value)
+                            }
                         />
                         <InputError message={errors.published_at} />
                     </div>
 
                     <div className="flex items-center gap-3 pt-2">
-                        <Button type="submit" disabled={processing}>Crear post</Button>
-                        <Button asChild variant="outline"><Link href="/admin/posts">Cancelar</Link></Button>
+                        <Button type="submit" disabled={processing}>
+                            Crear post
+                        </Button>
+                        <Button asChild variant="outline">
+                            <Link href="/admin/posts">Cancelar</Link>
+                        </Button>
                     </div>
                 </form>
-            </div>
+            </AdminFormCard>
         </AppLayout>
     );
 }

@@ -1,10 +1,11 @@
 import { useForm } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
+import { AdminFormCard } from '@/components/admin/AdminFormCard';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import InputError from '@/components/input-error';
+import AppLayout from '@/layouts/app-layout';
 
 export default function CategoriesCreate() {
     const { data, setData, post, processing, errors } = useForm({
@@ -23,6 +24,7 @@ export default function CategoriesCreate() {
 
     const handleNameChange = (value: string) => {
         setData('name', value);
+
         if (!data.slug || data.slug === slugify(data.name)) {
             setData('slug', slugify(value));
         }
@@ -34,20 +36,32 @@ export default function CategoriesCreate() {
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Categorías', href: '/admin/categories' }, { title: 'Nueva', href: '/admin/categories/create' }]}>
-            <div className="mx-auto max-w-xl p-6">
-                <h1 className="mb-6 text-2xl font-semibold">Nueva categoría</h1>
-
+        <AppLayout
+            breadcrumbs={[
+                { title: 'Categorías', href: '/admin/categories' },
+                { title: 'Nueva', href: '/admin/categories/create' },
+            ]}
+        >
+            <AdminFormCard title="Nueva categoría">
                 <form onSubmit={submit} className="space-y-5">
                     <div>
                         <Label htmlFor="name">Nombre</Label>
-                        <Input id="name" value={data.name} onChange={(e) => handleNameChange(e.target.value)} autoFocus />
+                        <Input
+                            id="name"
+                            value={data.name}
+                            onChange={(e) => handleNameChange(e.target.value)}
+                            autoFocus
+                        />
                         <InputError message={errors.name} />
                     </div>
 
                     <div>
                         <Label htmlFor="slug">Slug</Label>
-                        <Input id="slug" value={data.slug} onChange={(e) => setData('slug', e.target.value)} />
+                        <Input
+                            id="slug"
+                            value={data.slug}
+                            onChange={(e) => setData('slug', e.target.value)}
+                        />
                         <InputError message={errors.slug} />
                     </div>
 
@@ -56,27 +70,36 @@ export default function CategoriesCreate() {
                         <textarea
                             id="description"
                             value={data.description}
-                            onChange={(e) => setData('description', e.target.value)}
+                            onChange={(e) =>
+                                setData('description', e.target.value)
+                            }
                             rows={3}
-                            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:outline-none"
                         />
                         <InputError message={errors.description} />
                     </div>
 
                     <div>
                         <Label htmlFor="icon">Icono (opcional)</Label>
-                        <Input id="icon" value={data.icon} onChange={(e) => setData('icon', e.target.value)} placeholder="cpu, users, code..." />
+                        <Input
+                            id="icon"
+                            value={data.icon}
+                            onChange={(e) => setData('icon', e.target.value)}
+                            placeholder="cpu, users, code..."
+                        />
                         <InputError message={errors.icon} />
                     </div>
 
                     <div className="flex items-center gap-3 pt-2">
-                        <Button type="submit" disabled={processing}>Guardar</Button>
+                        <Button type="submit" disabled={processing}>
+                            Guardar
+                        </Button>
                         <Button asChild variant="outline">
                             <Link href="/admin/categories">Cancelar</Link>
                         </Button>
                     </div>
                 </form>
-            </div>
+            </AdminFormCard>
         </AppLayout>
     );
 }

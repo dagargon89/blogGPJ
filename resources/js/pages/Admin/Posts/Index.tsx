@@ -1,8 +1,9 @@
 import { Link, router } from '@inertiajs/react';
 import { Edit, Plus, Trash2 } from 'lucide-react';
-import AppLayout from '@/layouts/app-layout';
+import { AdminListCard } from '@/components/admin/AdminListCard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import AppLayout from '@/layouts/app-layout';
 
 interface Post {
     id: number;
@@ -40,31 +41,45 @@ export default function PostsIndex({ posts }: { posts: PaginatedPosts }) {
 
     return (
         <AppLayout breadcrumbs={[{ title: 'Posts', href: '/admin/posts' }]}>
-            <div className="p-6">
-                <div className="mb-6 flex items-center justify-between">
-                    <h1 className="text-2xl font-semibold">
-                        Posts{' '}
-                        <span className="ml-2 text-base font-normal text-muted-foreground">
+            <AdminListCard
+                title={
+                    <span className="flex flex-wrap items-baseline gap-2">
+                        <span>Posts</span>
+                        <span className="text-base font-normal text-muted-foreground">
                             ({posts.total})
                         </span>
-                    </h1>
+                    </span>
+                }
+                actions={
                     <Button asChild>
                         <Link href="/admin/posts/create">
                             <Plus className="mr-1.5 h-4 w-4" /> Nuevo
                         </Link>
                     </Button>
-                </div>
-
-                <div className="overflow-x-auto rounded-xl border border-border">
+                }
+            >
+                <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead className="bg-muted/50">
                             <tr>
-                                <th className="px-4 py-3 text-left font-medium tracking-wide text-muted-foreground">Título</th>
-                                <th className="px-4 py-3 text-left font-medium tracking-wide text-muted-foreground">Categoría</th>
-                                <th className="px-4 py-3 text-left font-medium tracking-wide text-muted-foreground">Tipo</th>
-                                <th className="px-4 py-3 text-left font-medium tracking-wide text-muted-foreground">Estado</th>
-                                <th className="px-4 py-3 text-left font-medium tracking-wide text-muted-foreground">Autor</th>
-                                <th className="px-4 py-3 text-left font-medium tracking-wide text-muted-foreground">Publicado</th>
+                                <th className="px-4 py-3 text-left font-medium tracking-wide text-muted-foreground">
+                                    Título
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium tracking-wide text-muted-foreground">
+                                    Categoría
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium tracking-wide text-muted-foreground">
+                                    Tipo
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium tracking-wide text-muted-foreground">
+                                    Estado
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium tracking-wide text-muted-foreground">
+                                    Autor
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium tracking-wide text-muted-foreground">
+                                    Publicado
+                                </th>
                                 <th className="px-4 py-3"></th>
                             </tr>
                         </thead>
@@ -72,21 +87,42 @@ export default function PostsIndex({ posts }: { posts: PaginatedPosts }) {
                             {posts.data.map((post) => (
                                 <tr key={post.id} className="hover:bg-muted/20">
                                     <td className="max-w-xs px-4 py-3">
-                                        <p className="truncate font-medium">{post.title}</p>
+                                        <p className="truncate font-medium">
+                                            {post.title}
+                                        </p>
                                     </td>
-                                    <td className="px-4 py-3 text-muted-foreground">{post.category}</td>
-                                    <td className="px-4 py-3 text-muted-foreground">{post.content_type}</td>
+                                    <td className="px-4 py-3 text-muted-foreground">
+                                        {post.category}
+                                    </td>
+                                    <td className="px-4 py-3 text-muted-foreground">
+                                        {post.content_type}
+                                    </td>
                                     <td className="px-4 py-3">
-                                        <Badge variant={statusVariant[post.status] ?? 'outline'}>
+                                        <Badge
+                                            variant={
+                                                statusVariant[post.status] ??
+                                                'outline'
+                                            }
+                                        >
                                             {post.status}
                                         </Badge>
                                     </td>
-                                    <td className="px-4 py-3 text-muted-foreground">{post.author}</td>
-                                    <td className="px-4 py-3 text-muted-foreground">{post.published_at ?? '—'}</td>
+                                    <td className="px-4 py-3 text-muted-foreground">
+                                        {post.author}
+                                    </td>
+                                    <td className="px-4 py-3 text-muted-foreground">
+                                        {post.published_at ?? '—'}
+                                    </td>
                                     <td className="px-4 py-3">
                                         <div className="flex items-center justify-end gap-2">
-                                            <Button asChild variant="ghost" size="sm">
-                                                <Link href={`/admin/posts/${post.id}/edit`}>
+                                            <Button
+                                                asChild
+                                                variant="ghost"
+                                                size="sm"
+                                            >
+                                                <Link
+                                                    href={`/admin/posts/${post.id}/edit`}
+                                                >
                                                     <Edit className="h-4 w-4" />
                                                 </Link>
                                             </Button>
@@ -104,7 +140,10 @@ export default function PostsIndex({ posts }: { posts: PaginatedPosts }) {
                             ))}
                             {posts.data.length === 0 && (
                                 <tr>
-                                    <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
+                                    <td
+                                        colSpan={7}
+                                        className="px-4 py-8 text-center text-muted-foreground"
+                                    >
                                         No hay posts aún.
                                     </td>
                                 </tr>
@@ -114,7 +153,7 @@ export default function PostsIndex({ posts }: { posts: PaginatedPosts }) {
                 </div>
 
                 {posts.last_page > 1 && (
-                    <div className="mt-6 flex justify-center gap-2">
+                    <div className="mt-6 flex justify-center gap-2 border-t border-border/60 pt-6">
                         {posts.links.map((link, i) => (
                             <Button
                                 key={i}
@@ -127,7 +166,7 @@ export default function PostsIndex({ posts }: { posts: PaginatedPosts }) {
                         ))}
                     </div>
                 )}
-            </div>
+            </AdminListCard>
         </AppLayout>
     );
 }
