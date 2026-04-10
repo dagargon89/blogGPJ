@@ -243,3 +243,48 @@
 .article-body tr:nth-child(even) td {
     background: color-mix(in oklch, var(--muted) 40%, transparent);
 }
+
+/*
+ * Impresión en ficha de blog: clase `blog-post-print-scope` se añade en Blog/Show.
+ * Solo entonces ocultamos el resto del documento y mostramos #printable-article.
+ */
+@media print {
+    html.blog-post-print-scope body * {
+        visibility: hidden;
+    }
+
+    html.blog-post-print-scope #printable-article,
+    html.blog-post-print-scope #printable-article * {
+        visibility: visible;
+    }
+
+    html.blog-post-print-scope #printable-article {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: 0 1rem 1.5rem;
+        background: white;
+        color: black;
+    }
+
+    html.blog-post-print-scope,
+    html.blog-post-print-scope body {
+        background: white !important;
+    }
+
+    html.blog-post-print-scope .article-printable {
+        color: black;
+    }
+
+    html.blog-post-print-scope .article-body {
+        color: black;
+    }
+
+    html.blog-post-print-scope .article-body a {
+        color: black;
+        text-decoration: underline;
+    }
+}
