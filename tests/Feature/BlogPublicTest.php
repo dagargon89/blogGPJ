@@ -3,6 +3,7 @@
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 
@@ -39,4 +40,23 @@ test('category show page renders', function () {
     $category = Category::factory()->create();
 
     $this->get("/categoria/{$category->slug}")->assertStatus(200);
+});
+
+test('category show exposes featured image as storage public url', function () {
+    $category = Category::factory()->create();
+    $storedPath = 'posts/covers/category-card.jpg';
+    Post::factory()->published()->article()->create([
+        'category_id' => $category->id,
+        'featured_image_path' => $storedPath,
+    ]);
+
+    $this->get("/categoria/{$category->slug}")
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Category/Show')
+            ->has('posts.data', 1)
+            ->where(
+                'posts.data.0.featured_image_path',
+                fn (?string $url) => is_string($url) && $url !== $storedPath,
+            ));
 });

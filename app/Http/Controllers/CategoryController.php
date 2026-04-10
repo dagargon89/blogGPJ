@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Post;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,13 +20,15 @@ class CategoryController extends Controller
 
         return Inertia::render('Category/Show', [
             'category' => $category->only(['id', 'name', 'slug', 'description', 'icon']),
-            'posts' => $posts->through(fn ($post) => [
+            'posts' => $posts->through(fn (Post $post) => [
                 'id' => $post->id,
                 'title' => $post->title,
                 'slug' => $post->slug,
                 'excerpt' => $post->excerpt,
                 'content_type' => $post->content_type,
-                'featured_image_path' => $post->featured_image_path,
+                'featured_image_path' => $post->featured_image_path
+                    ? Storage::disk('firebase')->url($post->featured_image_path)
+                    : null,
                 'tags' => $post->tags->map(fn ($t) => ['name' => $t->name, 'slug' => $t->slug]),
                 'author' => $post->author->name,
                 'published_at' => $post->published_at?->format('d M, Y'),

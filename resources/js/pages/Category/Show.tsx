@@ -26,7 +26,11 @@ interface Category {
 interface PaginatedPosts {
     data: Post[];
     links: { url: string | null; label: string; active: boolean }[];
-    meta: { current_page: number; last_page: number; total: number };
+    total: number;
+    current_page: number;
+    last_page: number;
+    prev_page_url: string | null;
+    next_page_url: string | null;
 }
 
 interface CategoryShowProps {
@@ -47,7 +51,7 @@ export default function CategoryShow({ category, posts }: CategoryShowProps) {
                         <p className="text-muted-foreground">{category.description}</p>
                     )}
                     <p className="mt-1 text-sm text-muted-foreground">
-                        {posts.meta.total} publicación{posts.meta.total !== 1 ? 'es' : ''}
+                        {posts.total} publicación{posts.total !== 1 ? 'es' : ''}
                     </p>
                 </header>
 
@@ -61,7 +65,7 @@ export default function CategoryShow({ category, posts }: CategoryShowProps) {
                     </div>
                 )}
 
-                {posts.meta.last_page > 1 && (
+                {posts.last_page > 1 && (
                     <div className="mt-10 flex justify-center gap-2">
                         {posts.links.map((link, i) => (
                             <Button
