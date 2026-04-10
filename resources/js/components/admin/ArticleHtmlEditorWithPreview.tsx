@@ -60,6 +60,8 @@ const PREVIEW_ALLOWED_ATTR = [
     'title',
 ];
 
+const PANEL_MIN_HEIGHT = 'min-h-[min(22rem,55vh)] lg:min-h-[22rem]';
+
 export interface ArticleHtmlEditorWithPreviewProps {
     id: string;
     label?: string;
@@ -95,14 +97,17 @@ export function ArticleHtmlEditorWithPreview({
         });
     }, [deferredValue]);
 
+    const panelChrome =
+        'rounded-lg border border-border/80 bg-background shadow-sm';
+
     const editor = (
-        <div className="flex min-h-[min(28rem,70vh)] flex-col lg:min-h-[28rem]">
+        <div className={cn('flex flex-col p-2', PANEL_MIN_HEIGHT)}>
             <textarea
                 id={id}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 rows={rows}
-                className="min-h-[min(28rem,70vh)] w-full flex-1 rounded-md border border-input bg-background px-3 py-2 font-mono text-sm text-foreground ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring lg:min-h-[28rem]"
+                className="min-h-[min(20rem,50vh)] w-full flex-1 resize-y rounded-md border border-border/60 bg-background px-3 py-2.5 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring lg:min-h-[20rem]"
                 placeholder={placeholder}
             />
         </div>
@@ -111,58 +116,80 @@ export function ArticleHtmlEditorWithPreview({
     const preview = (
         <div
             className={cn(
-                'min-h-[min(28rem,70vh)] overflow-y-auto rounded-md border border-input bg-muted/30 p-4 lg:min-h-[28rem]',
+                'flex min-h-0 flex-col overflow-hidden',
+                PANEL_MIN_HEIGHT,
+                panelChrome,
             )}
         >
-            {safePreviewHtml ? (
-                <div
-                    className={ARTICLE_PROSE_CLASSNAME}
-                    // Sanitized for admin preview only (DOMPurify)
-                    dangerouslySetInnerHTML={{ __html: safePreviewHtml }}
-                />
-            ) : (
-                <p className="text-sm text-muted-foreground">La vista previa aparecerá aquí al escribir HTML.</p>
-            )}
+            <div className="min-h-[min(20rem,50vh)] flex-1 overflow-y-auto bg-muted/15 p-4 lg:min-h-[20rem]">
+                {safePreviewHtml ? (
+                    <div
+                        className={ARTICLE_PROSE_CLASSNAME}
+                        // Sanitized for admin preview only (DOMPurify)
+                        dangerouslySetInnerHTML={{ __html: safePreviewHtml }}
+                    />
+                ) : (
+                    <p className="text-sm text-muted-foreground">
+                        La vista previa aparecerá aquí al escribir HTML.
+                    </p>
+                )}
+            </div>
         </div>
     );
 
     return (
-        <div className="space-y-2">
+        <div className="space-y-3">
             <Label htmlFor={id}>{label}</Label>
 
-            {/* Sale del max-w-3xl del formulario: ancho = 75vw respecto al viewport */}
-            <div className="relative ml-[calc(50%-50vw)] w-screen max-w-[100vw] overflow-x-clip px-3 sm:px-6">
-                <div className="mx-auto w-full min-w-0 space-y-2 lg:w-[75vw]">
-                    <div className="flex gap-2 lg:hidden">
-                        <Button
-                            type="button"
-                            size="sm"
-                            variant={mobilePanel === 'edit' ? 'default' : 'outline'}
-                            onClick={() => setMobilePanel('edit')}
-                        >
-                            Editor
-                        </Button>
-                        <Button
-                            type="button"
-                            size="sm"
-                            variant={mobilePanel === 'preview' ? 'default' : 'outline'}
-                            onClick={() => setMobilePanel('preview')}
-                        >
+            <div
+                className={cn(
+                    'rounded-xl border border-border/70 bg-card/40 p-4 shadow-sm dark:bg-card/30',
+                )}
+            >
+                <div className="mb-3 flex gap-2 lg:hidden">
+                    <Button
+                        type="button"
+                        size="sm"
+                        variant={
+                            mobilePanel === 'edit' ? 'default' : 'outline'
+                        }
+                        onClick={() => setMobilePanel('edit')}
+                    >
+                        Editor HTML
+                    </Button>
+                    <Button
+                        type="button"
+                        size="sm"
+                        variant={
+                            mobilePanel === 'preview' ? 'default' : 'outline'
+                        }
+                        onClick={() => setMobilePanel('preview')}
+                    >
+                        Vista previa
+                    </Button>
+                </div>
+
+                <div className="hidden gap-4 lg:grid lg:grid-cols-2">
+                    <div className="flex min-h-0 flex-col space-y-2">
+                        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                            Editor HTML
+                        </p>
+                        <div className={panelChrome}>{editor}</div>
+                    </div>
+                    <div className="flex min-h-0 flex-col space-y-2">
+                        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                             Vista previa
-                        </Button>
+                        </p>
+                        {preview}
                     </div>
+                </div>
 
-                    <div className="hidden gap-4 lg:grid lg:grid-cols-2">
-                        {editor}
-                        <div className="flex min-h-0 flex-col">
-                            <p className="mb-2 text-xs font-medium text-muted-foreground">Vista previa</p>
-                            {preview}
-                        </div>
-                    </div>
-
-                    <div className="lg:hidden">
-                        {mobilePanel === 'edit' ? editor : preview}
-                    </div>
+                <div className="space-y-2 lg:hidden">
+                    {mobilePanel === 'edit' ? (
+                        <div className={panelChrome}>{editor}</div>
+                    ) : (
+                        preview
+                    )}
                 </div>
             </div>
 

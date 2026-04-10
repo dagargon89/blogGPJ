@@ -6,7 +6,16 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
+
+const CATEGORY_NONE = '__none__';
 
 interface Option {
     id: number;
@@ -94,11 +103,11 @@ export default function PostsEdit({ post, categories, tags }: Props) {
     return (
         <AppLayout
             breadcrumbs={[
-                { title: 'Posts', href: '/admin/posts' },
+                { title: 'Publicaciones', href: '/admin/posts' },
                 { title: 'Editar', href: '#' },
             ]}
         >
-            <AdminFormCard title="Editar post" className="max-w-3xl">
+            <AdminFormCard title="Editar publicación" className="max-w-6xl">
                 <form
                     onSubmit={handleSubmit}
                     className="space-y-6"
@@ -145,53 +154,89 @@ export default function PostsEdit({ post, categories, tags }: Props) {
 
                     <div className="grid gap-5 sm:grid-cols-3">
                         <div>
-                            <Label htmlFor="content_type">Tipo</Label>
-                            <select
-                                id="content_type"
+                            <Label htmlFor="content_type">
+                                Tipo de contenido
+                            </Label>
+                            <Select
                                 value={data.content_type}
-                                onChange={(e) =>
-                                    setData('content_type', e.target.value)
-                                }
-                                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
+                                onValueChange={(v) => setData('content_type', v)}
                             >
-                                <option value="article">Artículo</option>
-                                <option value="video">Video</option>
-                                <option value="infographic">Infografía</option>
-                                <option value="document">Documento</option>
-                            </select>
+                                <SelectTrigger
+                                    id="content_type"
+                                    className="w-full"
+                                >
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="article">
+                                        Artículo
+                                    </SelectItem>
+                                    <SelectItem value="video">Video</SelectItem>
+                                    <SelectItem value="infographic">
+                                        Infografía
+                                    </SelectItem>
+                                    <SelectItem value="document">
+                                        Documento
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <InputError message={errors.content_type} />
                         </div>
                         <div>
                             <Label htmlFor="status">Estado</Label>
-                            <select
-                                id="status"
+                            <Select
                                 value={data.status}
-                                onChange={(e) =>
-                                    setData('status', e.target.value)
-                                }
-                                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
+                                onValueChange={(v) => setData('status', v)}
                             >
-                                <option value="draft">Borrador</option>
-                                <option value="published">Publicado</option>
-                                <option value="archived">Archivado</option>
-                            </select>
+                                <SelectTrigger id="status" className="w-full">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="draft">
+                                        Borrador
+                                    </SelectItem>
+                                    <SelectItem value="published">
+                                        Publicado
+                                    </SelectItem>
+                                    <SelectItem value="archived">
+                                        Archivado
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <InputError message={errors.status} />
                         </div>
                         <div>
                             <Label htmlFor="category_id">Categoría</Label>
-                            <select
-                                id="category_id"
-                                value={data.category_id}
-                                onChange={(e) =>
-                                    setData('category_id', e.target.value)
+                            <Select
+                                value={
+                                    data.category_id
+                                        ? data.category_id
+                                        : CATEGORY_NONE
                                 }
-                                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
+                                onValueChange={(v) =>
+                                    setData(
+                                        'category_id',
+                                        v === CATEGORY_NONE ? '' : v,
+                                    )
+                                }
                             >
-                                <option value="">Seleccionar...</option>
-                                {categories.map((c) => (
-                                    <option key={c.id} value={c.id}>
-                                        {c.name}
-                                    </option>
-                                ))}
-                            </select>
+                                <SelectTrigger id="category_id" className="w-full">
+                                    <SelectValue placeholder="Seleccionar categoría" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value={CATEGORY_NONE}>
+                                        Seleccionar categoría
+                                    </SelectItem>
+                                    {categories.map((c) => (
+                                        <SelectItem
+                                            key={c.id}
+                                            value={String(c.id)}
+                                        >
+                                            {c.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                             <InputError message={errors.category_id} />
                         </div>
                     </div>

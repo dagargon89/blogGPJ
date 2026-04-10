@@ -41,7 +41,7 @@ export default function TagsIndex({ tags }: { tags: Tag[] }) {
                                     Slug
                                 </th>
                                 <th className="px-4 py-3 text-left font-medium tracking-wide text-muted-foreground">
-                                    Posts
+                                    Publicaciones
                                 </th>
                                 <th className="px-4 py-3"></th>
                             </tr>

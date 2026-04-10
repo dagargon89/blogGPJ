@@ -34,17 +34,21 @@ const statusVariant: Record<string, 'default' | 'secondary' | 'outline'> = {
 
 export default function PostsIndex({ posts }: { posts: PaginatedPosts }) {
     const destroy = (id: number) => {
-        if (confirm('¿Mover este post a la papelera?')) {
+        if (confirm('¿Mover esta publicación a la papelera?')) {
             router.delete(`/admin/posts/${id}`);
         }
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Posts', href: '/admin/posts' }]}>
+        <AppLayout
+            breadcrumbs={[
+                { title: 'Publicaciones', href: '/admin/posts' },
+            ]}
+        >
             <AdminListCard
                 title={
                     <span className="flex flex-wrap items-baseline gap-2">
-                        <span>Posts</span>
+                        <span>Publicaciones</span>
                         <span className="text-base font-normal text-muted-foreground">
                             ({posts.total})
                         </span>

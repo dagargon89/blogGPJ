@@ -5,8 +5,8 @@ import { dashboard } from '@/routes';
 
 export default function Dashboard() {
     return (
-        <AppLayout breadcrumbs={[{ title: 'Dashboard', href: dashboard() }]}>
-            <Head title="Dashboard" />
+        <AppLayout breadcrumbs={[{ title: 'Panel', href: dashboard() }]}>
+            <Head title="Panel" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">
                     <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
