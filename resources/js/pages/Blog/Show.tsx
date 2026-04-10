@@ -147,26 +147,22 @@ export default function BlogShow({ post, related_posts }: BlogShowProps) {
 
             {/* ── Article shell ── */}
             <div className="mx-auto max-w-3xl px-4 sm:px-6">
-                {/* Back link — floats over the hero gradient */}
+                {/* Volver: bajo el hero, sobre fondo de página (mejor contraste) */}
                 <div
-                    className={
-                        post.media.cover
-                            ? 'relative z-10 -mt-14 pb-2 print:hidden'
-                            : 'pt-10 print:hidden'
-                    }
+                    className={`mb-6 print:hidden ${post.media.cover ? 'pt-6 sm:pt-8' : 'pt-10'}`}
                 >
                     <Link
                         href="/blog"
-                        className="inline-flex items-center gap-1.5 rounded-full bg-background/70 px-3 py-1.5 text-sm text-muted-foreground backdrop-blur-sm transition-colors hover:text-foreground"
+                        className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground shadow-sm transition-colors hover:border-primary/30 hover:bg-accent hover:text-accent-foreground"
                     >
-                        <ArrowLeft className="h-3.5 w-3.5" />
+                        <ArrowLeft className="h-4 w-4 shrink-0 text-primary" />
                         Volver al blog
                     </Link>
                 </div>
 
                 <div id="printable-article" className="article-printable">
                     {/* ── Post header ── */}
-                    <header className="mt-6 mb-10">
+                    <header className="mb-10">
                         {/* Badges */}
                         <div className="mb-4 flex flex-wrap items-center gap-2">
                             <CategoryBadge
