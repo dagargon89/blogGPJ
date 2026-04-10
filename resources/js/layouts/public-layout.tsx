@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, LayoutDashboard, Moon, Sun } from 'lucide-react';
+import AppLogoIcon from '@/components/app-logo-icon';
+import { LayoutDashboard, Moon, Sun } from 'lucide-react';
 import { useAppearance } from '@/hooks/use-appearance';
 import { Button } from '@/components/ui/button';
 import type { Auth } from '@/types/auth';
@@ -20,7 +21,9 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                 <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2 font-semibold text-primary">
-                        <BookOpen className="h-5 w-5" />
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center">
+                            <AppLogoIcon alt="" className="h-9 w-9" />
+                        </span>
                         <span className="hidden sm:inline">Hub de Conocimiento</span>
                     </Link>
 
