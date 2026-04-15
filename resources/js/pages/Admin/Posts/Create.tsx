@@ -250,8 +250,7 @@ export default function PostsCreate({ categories: initialCategories, tags: initi
                             value={data.content}
                             onChange={(v) => setData('content', v)}
                             error={errors.content}
-                            placeholder="<p>Escribe el contenido en HTML...</p>"
-                            rows={12}
+                            placeholder="Escribe el contenido aquí…"
                         />
                     )}
 

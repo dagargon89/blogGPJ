@@ -244,6 +244,46 @@
     background: color-mix(in oklch, var(--muted) 40%, transparent);
 }
 
+/* ── TipTap editor styles ─────────────────────────────────────────── */
+.tiptap-editor {
+    cursor: text;
+}
+
+.tiptap-editor p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: var(--muted-foreground);
+    pointer-events: none;
+    height: 0;
+}
+
+/* Table chrome inside TipTap */
+.tiptap-editor table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0;
+}
+.tiptap-editor th,
+.tiptap-editor td {
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.7rem;
+    position: relative;
+    vertical-align: top;
+    min-width: 2rem;
+}
+.tiptap-editor th {
+    background: var(--muted);
+    font-weight: 600;
+    text-align: left;
+}
+.tiptap-editor .selectedCell::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: color-mix(in oklch, var(--primary) 15%, transparent);
+    pointer-events: none;
+}
+
 /*
  * Impresión en ficha de blog: clase `blog-post-print-scope` se añade en Blog/Show.
  * Solo entonces ocultamos el resto del documento y mostramos #printable-article.

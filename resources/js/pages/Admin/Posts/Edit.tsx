@@ -262,7 +262,6 @@ export default function PostsEdit({ post, categories: initialCategories, tags: i
                             value={data.content}
                             onChange={(v) => setData('content', v)}
                             error={errors.content}
-                            rows={12}
                         />
                     )}
 
