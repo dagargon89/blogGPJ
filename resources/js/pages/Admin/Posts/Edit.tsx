@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { useForm, Link } from '@inertiajs/react';
 import { AdminFormCard } from '@/components/admin/AdminFormCard';
 import { ArticleHtmlEditorWithPreview } from '@/components/admin/ArticleHtmlEditorWithPreview';
 import { FeaturedImageField } from '@/components/admin/FeaturedImageField';
+import { QuickCreateTrigger } from '@/components/admin/QuickCreateDialog';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -45,7 +47,10 @@ interface Props {
     tags: Option[];
 }
 
-export default function PostsEdit({ post, categories, tags }: Props) {
+export default function PostsEdit({ post, categories: initialCategories, tags: initialTags }: Props) {
+    const [categories, setCategories] = useState<Option[]>(initialCategories);
+    const [tags, setTags] = useState<Option[]>(initialTags);
+
     const {
         data,
         setData,
@@ -206,7 +211,17 @@ export default function PostsEdit({ post, categories, tags }: Props) {
                             <InputError message={errors.status} />
                         </div>
                         <div>
-                            <Label htmlFor="category_id">Categoría</Label>
+                            <div className="flex items-center">
+                                <Label htmlFor="category_id">Categoría</Label>
+                                <QuickCreateTrigger
+                                    label="Categoría"
+                                    endpoint="/admin/categories/quick-store"
+                                    onCreated={(cat) => {
+                                        setCategories((prev) => [...prev, cat].sort((a, b) => a.name.localeCompare(b.name)));
+                                        setData('category_id', String(cat.id));
+                                    }}
+                                />
+                            </div>
                             <Select
                                 value={
                                     data.category_id
@@ -310,9 +325,19 @@ export default function PostsEdit({ post, categories, tags }: Props) {
                         error={errors.featured_image}
                     />
 
-                    {tags.length > 0 && (
-                        <div>
+                    <div>
+                        <div className="flex items-center">
                             <Label>Etiquetas</Label>
+                            <QuickCreateTrigger
+                                label="Etiqueta"
+                                endpoint="/admin/tags/quick-store"
+                                onCreated={(tag) => {
+                                    setTags((prev) => [...prev, tag].sort((a, b) => a.name.localeCompare(b.name)));
+                                    setData('tag_ids', [...data.tag_ids, tag.id]);
+                                }}
+                            />
+                        </div>
+                        {tags.length > 0 && (
                             <div className="mt-2 flex flex-wrap gap-2">
                                 {tags.map((tag) => (
                                     <label
@@ -333,8 +358,8 @@ export default function PostsEdit({ post, categories, tags }: Props) {
                                     </label>
                                 ))}
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
 
                     <div>
                         <Label htmlFor="published_at">

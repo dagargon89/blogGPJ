@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+    Route::post('categories/quick-store', [CategoryController::class, 'quickStore'])->name('categories.quick-store');
+    Route::post('tags/quick-store', [TagController::class, 'quickStore'])->name('tags.quick-store');
     Route::resource('categories', CategoryController::class)->except(['show']);
     Route::resource('tags', TagController::class)->except(['show']);
     Route::resource('posts', PostController::class)->except(['show']);
