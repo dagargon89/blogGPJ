@@ -194,18 +194,6 @@ export default function BlogShow({ post, related_posts }: BlogShowProps) {
                             </span>
                         </div>
 
-                        {/* Title */}
-                        <h1 className="text-3xl leading-tight font-bold text-foreground sm:text-4xl">
-                            {post.title}
-                        </h1>
-
-                        {/* Excerpt — lead paragraph */}
-                        {post.excerpt && (
-                            <p className="mt-3 text-lg leading-relaxed text-muted-foreground">
-                                {post.excerpt}
-                            </p>
-                        )}
-
                         {/* Author / Meta */}
                         <div className="mt-6 flex items-center gap-3 border-t border-border pt-5">
                             <AuthorAvatar name={post.author} />
