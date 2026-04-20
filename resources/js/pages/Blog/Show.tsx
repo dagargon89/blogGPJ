@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo } from 'react';
 import { ArticleReaderActions } from '@/components/blog/ArticleReaderActions';
+import { ShareButtons } from '@/components/blog/ShareButtons';
 import { CategoryBadge } from '@/components/blog/CategoryBadge';
 import { TableOfContents } from '@/components/blog/TableOfContents';
 import { PostCard } from '@/components/cards/PostCard';
@@ -276,6 +277,12 @@ export default function BlogShow({ post, related_posts }: BlogShowProps) {
                             )}
                     </div>
                 </div>
+
+                {/* ── Share ── */}
+                <ShareButtons
+                    title={post.title}
+                    className="mb-10 print:hidden"
+                />
 
                 {/* ── Tags ── */}
                 {post.tags.length > 0 && (
