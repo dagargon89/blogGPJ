@@ -9,14 +9,16 @@ import {
     GalleryHorizontal,
     Tag,
 } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { ArticleReaderActions } from '@/components/blog/ArticleReaderActions';
 import { CategoryBadge } from '@/components/blog/CategoryBadge';
+import { TableOfContents } from '@/components/blog/TableOfContents';
 import { PostCard } from '@/components/cards/PostCard';
 import { ArticleRenderer } from '@/components/renderers/ArticleRenderer';
 import { DocumentRenderer } from '@/components/renderers/DocumentRenderer';
 import { VideoRenderer } from '@/components/renderers/VideoRenderer';
 import PublicLayout from '@/layouts/public-layout';
+import { processArticleContent } from '@/lib/article-headings';
 
 /* ── Types ── */
 type ContentType = 'article' | 'video' | 'infographic' | 'document';
@@ -119,6 +121,16 @@ export default function BlogShow({ post, related_posts }: BlogShowProps) {
     const type = typeConfig[post.content_type] ?? typeConfig.article;
     const TypeIcon = type.icon;
 
+    const { content: processedContent, headings } = useMemo(
+        () =>
+            post.content_type === 'article' && post.content
+                ? processArticleContent(post.content)
+                : { content: post.content ?? '', headings: [] },
+        [post.content, post.content_type],
+    );
+
+    const hasToc = post.content_type === 'article' && headings.length >= 2;
+
     useEffect(() => {
         document.documentElement.classList.add('blog-post-print-scope');
 
@@ -145,8 +157,12 @@ export default function BlogShow({ post, related_posts }: BlogShowProps) {
                 <div className="h-1.5 bg-gradient-to-r from-primary/50 via-primary to-primary/50 print:hidden" />
             )}
 
-            {/* ── Article shell ── */}
-            <div className="mx-auto max-w-3xl px-4 sm:px-6">
+            {/* ── Article shell ──
+                 Content stays centered at max-w-3xl.
+                 The TOC is placed outside that column via absolute left-full,
+                 so it sits in the page's right gutter without displacing the article.
+            ── */}
+            <div className="relative mx-auto max-w-3xl px-4 sm:px-6">
                 {/* Volver: bajo el hero, sobre fondo de página (mejor contraste) */}
                 <div
                     className={`mb-6 print:hidden ${post.media.cover ? 'pt-6 sm:pt-8' : 'pt-10'}`}
@@ -244,7 +260,7 @@ export default function BlogShow({ post, related_posts }: BlogShowProps) {
                             )}
 
                         {post.content_type === 'article' && post.content && (
-                            <ArticleRenderer content={post.content} />
+                            <ArticleRenderer content={processedContent} />
                         )}
 
                         {/* Empty state when no renderable content */}
@@ -277,6 +293,20 @@ export default function BlogShow({ post, related_posts }: BlogShowProps) {
                             />
                         ))}
                     </div>
+                )}
+
+                {/* ── TOC: en el margen derecho, fuera de la columna de contenido ──
+                     Usa absolute left-full para posicionarse a la derecha del max-w-3xl
+                     sin afectar el layout del artículo. Visible solo en pantallas xl+
+                     donde hay suficiente espacio en el gutter (≥256 px a cada lado).
+                ── */}
+                {hasToc && (
+                    <aside
+                        aria-label="Tabla de contenidos"
+                        className="absolute top-0 left-full hidden h-full w-56 pl-8 xl:block print:hidden"
+                    >
+                        <TableOfContents headings={headings} />
+                    </aside>
                 )}
             </div>
 
